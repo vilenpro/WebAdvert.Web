@@ -127,6 +127,14 @@ namespace WebAdvert.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordModel model)
         {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByNameAsync(model.Email);
+                if (user != null)
+                {
+                   
+                }  
+            }
             return View(model);
         }
 
