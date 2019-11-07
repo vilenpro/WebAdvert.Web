@@ -132,8 +132,13 @@ namespace WebAdvert.Web.Controllers
                 var user = await _userManager.FindByNameAsync(model.Email);
                 if (user != null)
                 {
-                   
-                }  
+                   await user.ForgotPasswordAsync().ConfigureAwait(false);
+                    return RedirectToAction("ResetPassword");
+                } 
+                else
+                {
+                    ModelState.AddModelError("UserNotFound", "Unable to find the user for provided email address");
+                }
             }
             return View(model);
         }
