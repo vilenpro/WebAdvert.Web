@@ -129,12 +129,12 @@ namespace WebAdvert.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByNameAsync(model.Email);
+                var user = await _userManager.FindByEmailAsync(model.Email);
                 if (user != null)
                 {
-                   await user.ForgotPasswordAsync().ConfigureAwait(false);
+                    await user.ForgotPasswordAsync().ConfigureAwait(false);
                     return RedirectToAction("ResetPassword");
-                } 
+                }
                 else
                 {
                     ModelState.AddModelError("UserNotFound", "Unable to find the user for provided email address");
@@ -152,6 +152,19 @@ namespace WebAdvert.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> ResetPassword(ResetPasswordModel model)
         {
+            if (ModelState.IsValid)
+            {
+                var user = _pool.GetUser();
+                if (user != null)
+                {
+                    await user.ConfirmForgotPasswordAsync(model.Code, model.Password);
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    ModelState.AddModelError(null, "User not found");
+                }
+            }
             return View(model);
         }
 
